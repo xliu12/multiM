@@ -4,6 +4,8 @@ suppressPackageStartupMessages({
     library(tidyverse)
 })
 
+library(devtools)
+load_all("multiplymed")
 # gendata.R is multivariate M and Z
 # gendata2.R is binary M and Z
 dgp <- 1
