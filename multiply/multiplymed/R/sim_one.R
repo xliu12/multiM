@@ -334,3 +334,6 @@ mc_cores <- 20
 seedseq <- seq(from=1, to=1000, by=num_reps)
 
 jobconds <- c(1:nrow(condition))
+
+# zip file to upload -----
+zip("multiplymed.zip", files = dir("multiplymed"))
