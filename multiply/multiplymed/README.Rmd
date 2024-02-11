@@ -1,5 +1,5 @@
 ---
-title: "HDmediation"
+title: "multiple mediators"
 output: github_document
 ---
 
@@ -11,4 +11,4 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <!-- badges: end -->
 
-Efficient, doubly-robust--and possibly transported--estimation of interventional (in)direct effects with high-dimensional mediators and mediator-outcome confounders. 
+Interventional (in)direct effects with multiple mediators.

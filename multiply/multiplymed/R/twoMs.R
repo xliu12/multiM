@@ -1,4 +1,4 @@
-not_transported <- function(data, Aname, Wnames, Znames, M1names, M2names, Yname, family, num_folds = 1, partial_tmle, bounds,
+non_clustered <- function(data, Aname, Wnames, Znames, M1names, M2names, Yname, family, num_folds = 1, partial_tmle, bounds,
                             learners_g = c("SL.glm", "SL.glm.interaction", "SL.mean"),
                             learners_e = c("SL.glm", "SL.glm.interaction", "SL.mean"),
                             learners_b = c("SL.glm", "SL.glm.interaction", "SL.mean"),

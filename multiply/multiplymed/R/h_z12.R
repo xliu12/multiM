@@ -145,19 +145,13 @@ h_z <- function(data, varnames, folds, learners, ...) {
 }
 
 
+
+
 uniformly_sample_M <- function(data, M) {
-    out <- foreach(m = M,
-                   .combine = cbind,
-                   .options.future = list(seed = TRUE)) %dofuture% {
-                       sample_M(data[[m]])
-                   }
-    if (length(M) == 1) out <- as.matrix(out)
+    out <- sapply(M, function(m) { sample_M(data[[m]]) })
     colnames(out) <- M
     as.data.frame(out)
 }
-
-
-
 
 sample_M <- function(M) {
     vals_M <- unique(M)
