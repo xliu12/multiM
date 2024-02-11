@@ -178,17 +178,11 @@ clustered <- function(data,
         mean(s) + c(-1, 1) * qnorm(0.975) * sqrt(var(s) / nrow(data))
     })
 
-    # # sequential regression
-    # vvbar_effs <- effect(vvbar)
-    # reg_effs <- sapply(vvbar_effs, mean, na.rm = TRUE)
-    # 
-    # # output ------------
-    # estimates <- data.frame(names(thetas_effs),
-    #            cbind(thetas_effs, se_effs, t(ci_effs), reg_effs))
-    # colnames(estimates) <- c("effect", "est_onestep", "se", "ci1", "ci2", "est_reg")
-    # 
-    # # out <- list(estimates = estimates, eifs_effs = eifs_effs)
-    # estimates
+    # regression
+    regs_effs <- unlist(effect(regs))
+    # weighting
+    rmpw_effs <- unlist(effect(rmpw))
+    
     out <- mget(ls(envir = environment()))
     
     return(out)
