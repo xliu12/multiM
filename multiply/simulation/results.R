@@ -14,6 +14,8 @@ options(dplyr.print_max = 100, pillar.print_max = 50, dplyr.width = Inf)
 
 # file.rename(fromFile, toFile)
 
+# scp file transfer --------
+# scp -r xliu19@ls6.tacc.utexas.edu:/work/08878/xliu19/ls6/multiply/RData/ .
 
 # Nonrandomized ---------------------------
 
