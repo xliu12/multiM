@@ -17,6 +17,7 @@ clustered <- function(data,
                       learners_y = c("SL.glm")
 ) {
     # add interactions
+    data_in <- data
     data_in <- data %>% mutate(
         AM = data_in$A * data_in[, Mnames],
         Mint = data_in[, Mnames[1]] * data_in[, Mnames[2]],
@@ -27,6 +28,7 @@ clustered <- function(data,
     Sdumm <- dummy_cols(data[[Sname]], remove_first_dummy = TRUE, remove_selected_columns = TRUE)
     colnames(Sdumm) <- paste0("S", 1:ncol(Sdumm))
     Sname_dummies <- colnames(Sdumm)
+    
     data_in <- data.frame(data_in, Sdumm)
     data_in[[Sname]] <- as.factor(data_in[[Sname]])
     
@@ -50,9 +52,15 @@ clustered <- function(data,
     ipwA_c <- ipwA.c(a_c, data_in, varnames, stablize = "none") # later stablize in EIF weight
     
     if (Mfamily == "binomial") {
-        m1_ac <- m1.ac(data_in, whichM = 1, varnames, ipw = NULL, cluster_opt = cluster_opt_m, folds, learners_m, bounded = TRUE)
+        m1_ac <- m1.ac(data_in, whichM = 1, varnames, ipw = NULL, 
+                       cluster_opt = cluster_opt_m, folds, 
+                       learners_m, 
+                       bounded = TRUE)
         
-        m2_m1ac <- m2.m1ac(data_in, whichM = 2, varnames, ipw = NULL, cluster_opt = cluster_opt_m, interaction = interaction_fitm2, folds, learners_m, bounded = TRUE)
+        m2_m1ac <- m2.m1ac(data_in, whichM = 2, varnames, ipw = NULL, 
+                           cluster_opt = cluster_opt_m, 
+                           interaction = interaction_fitm2, 
+                           folds, learners_m, bounded = TRUE)
         
         # joint probability p(M1,M2 | a, C)
         m1m2_ac <- m1m2.ac(m1_ac, m2_m1ac)

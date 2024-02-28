@@ -19,5 +19,4 @@ Imports:
     SuperLearner
 RoxygenNote: 7.2.1
 Depends: 
-    doFuture,
-    foreach
+    lme4

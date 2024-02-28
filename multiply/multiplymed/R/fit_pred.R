@@ -24,7 +24,7 @@ crossfit <- function(train, valid.list, yname, xnames, varnames,
         df_lm$wreg <- rep(1, nrow(df_lm))
     }
     # fixed effects -----------------
-    if (length(grep("glm", cluster_opt)) > 0) {
+    if (cluster_opt %in% c("FE.glm", "noncluster.glm")) {
         if (cluster_opt == "FE.glm") {
             fit <- glm(formula = paste("Y ~ S +", paste(xnames, collapse = " + ")), 
                        weights = wreg, 
@@ -46,7 +46,7 @@ crossfit <- function(train, valid.list, yname, xnames, varnames,
         }, simplify = TRUE)
     }
     
-    if (length(grep("mlr", cluster_opt)) > 0) {
+    if (cluster_opt %in% c("FE.mlr", "noncluster.mlr")) {
         df_FE <- data.frame(df_lm, train[, Sname_dummies])
         
         if (cluster_opt == "FE.mlr") {
@@ -80,10 +80,18 @@ crossfit <- function(train, valid.list, yname, xnames, varnames,
     }
     
     # random effects ------------------------
-    if (cluster_opt == "RE") {
-        fit <- glmer(formula = paste("Y ~", paste(xnames, collapse = " + "), "+ (1 | S)"), 
-                     weights = wreg,
-                     data = df_lm, family = family[[1]])
+    if (cluster_opt == "RE.glm") {
+        REformula <- paste("Y ~", paste(xnames, collapse = " + "), "+ (1 | S)")
+        if (family[[1]] == "gaussian") {
+            fit <- lmer(formula = REformula, 
+                         weights = wreg,
+                         data = df_lm) 
+        }
+        if (family[[1]] != "gaussian") {
+            fit <- glmer(formula = REformula, 
+                        weights = wreg,
+                        data = df_lm, family = family[[1]]) 
+        }
         preds <- sapply(valid.list, function(validX) {
             newX <- data.frame(validX[, xnames, drop = FALSE], 
                                S = validX[[Sname]] )
@@ -140,7 +148,7 @@ crossfit <- function(train, valid.list, yname, xnames, varnames,
 # xnames <- Xnames
 
 
-bound <- function(vals, tol = 1e-3) {
+bound <- function(vals, tol = 1e-6) {
     vals[vals < tol] <- tol
     vals[vals > 1 - tol] <- 1 - tol
     return(vals)
