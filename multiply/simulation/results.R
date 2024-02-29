@@ -281,9 +281,13 @@ res_long1 <- res_long %>% mutate(
                            "reg" ~ "regression", "rmpw" ~ "weighting", "multi" ~ "multiply-robust", 
                            .ptype = factor(levels = c("multiply-robust", "regression", "weighting")))
     ) %>% 
-  mutate(A_fit = paste0("a", cluster_a), 
-         M_fit = paste0("m", cluster_m), 
-         Y_fit = paste0("y", cluster_y))
+  mutate(A_fit = case_match(cluster_a, 
+                            "FE" ~ "Afixed", "RE" ~ "Arand", "SL" ~ "Asl"), 
+         M_fit = case_match(cluster_m, 
+                            "FE" ~ "Mfixed", "RE" ~ "Mrand", "SL" ~ "Msl"), 
+         Y_fit = case_match(cluster_y, 
+                            "FE" ~ "Yfixed", "RE" ~ "Yrand", "SL" ~ "Ysl")
+         )
 
 write_csv(res_long1, file = "Tables_Figs/res_long1.csv")
 
@@ -334,7 +338,7 @@ save.image("simulation/results.RData")
 
 
 # PLOT ----------------
-
+load("simulation/results.RData")
 
 # theme figure -----------
 fig.theme <- 
@@ -361,7 +365,7 @@ fig.theme <-
 
 
 
-##  bias ----
+##  cluster vs SL ----
 plotdf <- res_long1 %>% 
   filter(
     abs.performance %in% c("|Rel.Bias|", "RMSE"), 
@@ -410,14 +414,82 @@ fig.rbias <- ggplot(plotdf) +
   theme(
     strip.background.x = element_rect(color = "lightgrey", fill = "lightgrey"),
     strip.background.y = element_blank(),
-    strip.text.x = element_text(size = 14),
+    strip.text.x = element_text(size = 15),
     strip.text.y = element_blank(),
-    axis.text.x = element_text(size = 12) # element_text(angle = 90, vjust = 0.5, hjust=1)
-        )
+    plot.title = element_text(size = 16),
+    axis.title = element_text(size = 14),
+    axis.text.y = element_text(size = 15),
+    axis.text.x = element_text(size = 15) # element_text(angle = 90, vjust = 0.5, hjust=1)
+  )
+
 
 fig.rbias
 
 ggsave("Tables_Figs/fig_CLvsSL.pdf", height = 12.5, width = 12.5)
+
+
+
+
+
+##  fixed vs RE ----
+plotdf <- res_long1 %>% 
+  filter(
+    abs.performance %in% c("|Rel.Bias|", "RMSE"), 
+    str_detect(effname, "Y\\(")
+    # effname %in% c("Y(1,gm1(1),gm2(0))") # c( "Y(0,gmjo(0))" ), # (!true_model %in% c("other"))
+    , J == 100, nj == 10 
+    , cluster_a %in% c("FE","RE"), cluster_m %in% c("FE","RE"), cluster_y %in% c("FE","RE")
+  )
+
+fig.rbias <- ggplot(plotdf) +
+  ggtitle( glue("{unique(plotdf$J)} clusters, cluster size {unique(plotdf$nj)}") ) + #, ICC = {unique(plotdf$icc)}, association of X and U = {unique(plotdf$x_z)};  estimand: {unique(plotdf$effname)}
+  facet_grid(Estimator ~abs.performance , 
+             #A_fit ~ Y_fit, #Y_true + Clus_true + Trt_true
+             labeller = labeller(
+               # cluster_a = label_both, cluster_y = label_both , 
+               abs.performance = label_value, Estimator = label_both
+             ), 
+             scales = "free") +
+  # geom_point(
+  geom_boxplot(
+    aes( x = abs.value, 
+         # xmin = , xmax = max(abs.value), xlower=quantile(abs.value, 0.25),xupper=quantile(abs.value, 0.75),
+         y = interaction(A_fit,  Y_fit, M_fit), #interaction(A_mod,  Y_mod,  M_mod), #
+         fill = Estimator #, shape = cluster_m
+    ), color = "black", size = 0.5, alpha = 1 , position = "dodge") +
+  # geom_line(aes(y = value, x = sample_size, linetype = Estimator,
+  #               group=interaction(Estimator,Nuisance_estimation),
+  #                color = Nuisance_estimation) ) +
+  scale_x_continuous("Relative Bias or RMSE" 
+                     # ,breaks = c(-1.5, -1, -0.5, 0, 0.5, 1, 1.5)/10
+  ) +
+  scale_y_discrete("fitted models for A, Y, M") +
+  geom_vline(xintercept = 0.1, size = 0.2, linetype = "longdash") +
+  # geom_vline(xintercept = 0.05, size = 0.2, linetype = "longdash") +
+  # geom_hline(yintercept = 0, size = 0.4, linetype = "longdash") +
+  # geom_hline(yintercept = -0.05, size = 0.2, linetype = "longdash") +
+  # geom_hline(yintercept = -0.1, size = 0.2, linetype = "longdash") +
+  # scale_x_continuous("Relative Bias", breaks = c(-c(9,5,3)/10, -0.1, 0.1, c(3,5,9)/10) ) +
+  # scale_linetype_manual("Estimator", values = c("solid", "dashed")) +
+  # scale_color_manual("Fit models", values = c("darkgreen", "blue")) +
+  fig.theme + 
+  theme(
+    strip.background.x = element_rect(color = "lightgrey", fill = "lightgrey"),
+    strip.background.y = element_blank(),
+    strip.text.x = element_text(size = 15),
+    strip.text.y = element_blank(),
+    plot.title = element_text(size = 16),
+    axis.title = element_text(size = 14),
+    axis.text.y = element_text(size = 15),
+    axis.text.x = element_text(size = 15) # element_text(angle = 90, vjust = 0.5, hjust=1)
+  )
+
+fig.rbias
+
+ggsave("Tables_Figs/fig_FEvsRE.pdf", height = 12.5, width = 12.5)
+
+
+
 
 
 ## mse -----------------------
