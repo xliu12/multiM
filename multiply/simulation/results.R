@@ -417,7 +417,7 @@ fig.rbias <- ggplot(plotdf) +
 
 fig.rbias
 
-ggsave("Tables_Figs/fig_CLvsSL.pdf", height = 12, width = 12)
+ggsave("Tables_Figs/fig_CLvsSL.pdf", height = 12.5, width = 12.5)
 
 
 ## mse -----------------------
