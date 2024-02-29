@@ -1,6 +1,10 @@
 
 library(tidyverse)
 options(dplyr.print_max = 100, pillar.print_max = 50, dplyr.width = Inf)
+library(glue)
+library(cowplot)
+library(ggpattern)
+library(GGally)
 # library(latex2exp)
 
 
@@ -260,9 +264,9 @@ res_long1 <- res_long %>% mutate(
                          "noncluster" ~ "SL", .default = cluster_m),
   cluster_y = case_match(cluster_y,
                          "noncluster" ~ "SL", .default = cluster_y),
-  A_mod = ifelse(cluster_a %in% c("FE","RE"), "ML", "SL"),
-  M_mod = ifelse(cluster_m %in% c("FE","RE"), "ML", "SL"),
-  Y_mod = ifelse(cluster_y %in% c("FE","RE"), "ML", "SL"),
+  A_mod = ifelse(cluster_a %in% c("FE","RE"), "aCluster", "aSL"),
+  M_mod = ifelse(cluster_m %in% c("FE","RE"), "mCluster", "mSL"),
+  Y_mod = ifelse(cluster_y %in% c("FE","RE"), "yCluster", "ySL"),
   abs.value = abs(value),
   abs.performance = case_when(
     as.character(performance)=="bias" ~ "|Bias|",
@@ -272,29 +276,38 @@ res_long1 <- res_long %>% mutate(
   )
 ) %>% 
   mutate(
-    factor(abs.performance, levels = c("|Rel.Bias|", "RMSE", "|Bias|"))
-    )
+    abs.performance = factor(abs.performance),
+    Estimator = case_match(estimator, 
+                           "reg" ~ "regression", "rmpw" ~ "weighting", "multi" ~ "multiply-robust", 
+                           .ptype = factor(levels = c("multiply-robust", "regression", "weighting")))
+    ) %>% 
+  mutate(A_fit = paste0("a", cluster_a), 
+         M_fit = paste0("m", cluster_m), 
+         Y_fit = paste0("y", cluster_y))
 
 write_csv(res_long1, file = "Tables_Figs/res_long1.csv")
 
 # Table ----------------------------
 
 # across sample sizes 
-aggtab <- res_long1 %>% group_by(
+aggtab <- res_long1 %>% 
+  filter(str_detect(effname, "Y\\(") ) %>% 
+  group_by(
   J, nj, 
-  # cluster_a, cluster_y,
-  # cluster_m,
-  M_mod, A_mod, Y_mod,
-  estimator, 
-  effname, abs.performance
+  cluster_a, cluster_m, cluster_y,
+  A_fit, M_fit, Y_fit,
+  A_mod, M_mod, Y_mod,
+  Estimator, estimator,
+  # effname, 
+  abs.performance
 ) %>% summarise(
   across(abs.value, list(mean = ~mean(.), min = ~min(.), max = ~max(.)))
 ) %>% 
   filter(abs.performance != "MSE" )
 
 aggtab_wide <- aggtab %>% pivot_wider(
-  # names_from = c(abs.performance, J, nj),
-  names_from = c(abs.performance, estimator),
+  names_from = c(abs.performance),
+  # names_from = c(abs.performance, estimator),
   values_from = contains("abs.value"),
   # names_prefix = c("n_"),
   # names_glue = "{abs.performance}_J{J}_nj{nj}" # "n{n}_{abs.performance}_{.value}" 
@@ -302,6 +315,12 @@ aggtab_wide <- aggtab %>% pivot_wider(
   ,names_sort = T
 ) #%>% mutate(across(starts_with("MSE_"), ~(.*1000), .names ="1000{.col}") )
 
+aggtab_wide <- aggtab_wide %>% 
+  select(# effname, 
+         J, nj, Estimator, #A_mod, M_mod, Y_mod, 
+         cluster_a, cluster_m, cluster_y,
+         contains("Rel.Bias"), contains("RMSE"), everything()) %>% 
+  arrange(Estimator)
 
 write_csv(aggtab, file = "Tables_Figs/aggtab.csv")
 
@@ -343,27 +362,42 @@ fig.theme <-
 
 
 ##  bias ----
-plotdf <- res_long1 %>% filter(
-  performance %in% c("rbias"), effname %in% c("Y(1,gm1(1),gm2(0))"), # c( "Y(0,gmjo(0))" ), # (!true_model %in% c("other"))
-  J == 20, icc == 0.2, x_z ==0.3, nj == 10 #, cluster_m %in% c("FE", "RE")
-  )  
-  
+plotdf <- res_long1 %>% 
+  filter(
+    abs.performance %in% c("|Rel.Bias|", "RMSE"), 
+    str_detect(effname, "Y\\(")
+  # effname %in% c("Y(1,gm1(1),gm2(0))") # c( "Y(0,gmjo(0))" ), # (!true_model %in% c("other"))
+  , J == 100, nj == 10 #, cluster_m %in% c("FE", "RE")
+  )
+# plotdf <- aggtab %>% 
+  # filter(str_detect(abs.performance, "R"), 
+  #        nj == 10, J == 100
+  #        # str_detect(effname, "Y\\(")
+  #        )
 
 fig.rbias <- ggplot(plotdf) +
-  ggtitle( glue("{unique(plotdf$J)} clusters, cluster size {unique(plotdf$nj)}, ICC = {unique(plotdf$icc)}, association of X and U = {unique(plotdf$x_z)};  estimand: {unique(plotdf$effname)}") ) +
-  facet_grid( cluster_a ~ cluster_y, #Y_true + Clus_true + Trt_true
-             labeller = labeller(cluster_a = label_both, cluster_y = label_both #, nj = label_both, effname = label_value
+  ggtitle( glue("{unique(plotdf$J)} clusters, cluster size {unique(plotdf$nj)}") ) + #, ICC = {unique(plotdf$icc)}, association of X and U = {unique(plotdf$x_z)};  estimand: {unique(plotdf$effname)}
+  facet_grid(Estimator ~abs.performance , 
+                #A_fit ~ Y_fit, #Y_true + Clus_true + Trt_true
+             labeller = labeller(
+               # cluster_a = label_both, cluster_y = label_both , 
+               abs.performance = label_value, Estimator = label_both
                                  ), 
-             scales = "fixed") +
-  geom_point(aes(x = abs.value, y = interaction(estimator,  cluster_m), 
-                 color = estimator, shape = cluster_m
-                 ), size = 4 ) +
+             scales = "free") +
+  # geom_point(
+  geom_boxplot(
+  aes( x = abs.value, 
+    # xmin = , xmax = max(abs.value), xlower=quantile(abs.value, 0.25),xupper=quantile(abs.value, 0.75),
+                   y = interaction(A_mod,  Y_mod,  M_mod), #interaction(A_fit,  M_fit, Y_fit), 
+                 fill = Estimator #, shape = cluster_m
+                 ), color = "black", size = 0.5, alpha = 1 , position = "dodge") +
   # geom_line(aes(y = value, x = sample_size, linetype = Estimator,
   #               group=interaction(Estimator,Nuisance_estimation),
   #                color = Nuisance_estimation) ) +
-  scale_x_continuous("Relative Bias" 
+  scale_x_continuous("Relative Bias or RMSE" 
                      # ,breaks = c(-1.5, -1, -0.5, 0, 0.5, 1, 1.5)/10
                      ) +
+  scale_y_discrete("fitted models for A, Y, M") +
   geom_vline(xintercept = 0.1, size = 0.2, linetype = "longdash") +
   # geom_vline(xintercept = 0.05, size = 0.2, linetype = "longdash") +
   # geom_hline(yintercept = 0, size = 0.4, linetype = "longdash") +
@@ -372,11 +406,18 @@ fig.rbias <- ggplot(plotdf) +
   # scale_x_continuous("Relative Bias", breaks = c(-c(9,5,3)/10, -0.1, 0.1, c(3,5,9)/10) ) +
   # scale_linetype_manual("Estimator", values = c("solid", "dashed")) +
   # scale_color_manual("Fit models", values = c("darkgreen", "blue")) +
-  fig.theme # + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  fig.theme + 
+  theme(
+    strip.background.x = element_rect(color = "lightgrey", fill = "lightgrey"),
+    strip.background.y = element_blank(),
+    strip.text.x = element_text(size = 14),
+    strip.text.y = element_blank(),
+    axis.text.x = element_text(size = 12) # element_text(angle = 90, vjust = 0.5, hjust=1)
+        )
 
 fig.rbias
 
-ggsave("Tables_Figs/fig.rbias.pdf", height = 10, width = 12)
+ggsave("Tables_Figs/fig_CLvsSL.pdf", height = 12, width = 12)
 
 
 ## mse -----------------------
