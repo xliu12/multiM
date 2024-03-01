@@ -1,0 +1,1403 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass apa7
+\begin_preamble
+
+%\usepackage[applemac]{inputenc}
+
+\usepackage{apacite}
+\renewcommand{\BBAA}{\&}
+
+%\usepackage[style=apa, backend=biber]{biblatex}
+\raggedbottom
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}} 
+\end_preamble
+\options natbib
+\use_default_options true
+\begin_modules
+natbibapa
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\float_placement b
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style apacite
+\biblio_options round
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Mediated Moderation
+\end_layout
+
+\begin_layout ShortTitle
+Causal decomposition mediated moderation
+\end_layout
+
+\begin_layout Author
+Authors
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+and Brian T.
+ Keller
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Affiliation
+The University of Texas at Austin
+\end_layout
+
+\begin_layout AuthorNote
+Correspondence should be addressed to Xiao Liu, Department of Educational
+ Psychology, The University of Texas at Austin, Austin, TX 78712.
+ Email: xiao.liu@austin.utexas.edu.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Decomposition of the Gender Difference in Treatment Effects in the Empirical
+ Example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="3">
+<features booktabs="true" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+Estimate
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+95% CI
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+Total moderation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0.31
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+(0.06, 0.57)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+Remaining moderation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0.18
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+(-0.05, 0.42)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+Mediated moderation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+0.13
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+(0.05, 0.22)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+% mediated
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+42%
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Figures
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Diagram of the relationships among subgroup (
+\begin_inset Formula $R$
+\end_inset
+
+), treatment assignment (
+\begin_inset Formula $T$
+\end_inset
+
+), mediator (
+\begin_inset Formula $M$
+\end_inset
+
+), outcome (
+\begin_inset Formula $Y$
+\end_inset
+
+), and the vector of baseline covariates (
+\begin_inset Formula $C$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename ../../../Draft/diagram_subgroup.png
+	lyxscale 20
+	width 80text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+Note
+\emph default
+.
+ There would be no arrows from 
+\begin_inset Formula $C$
+\end_inset
+
+, 
+\begin_inset Formula $R$
+\end_inset
+
+ to 
+\begin_inset Formula $T$
+\end_inset
+
+ if the treatment assignment (
+\begin_inset Formula $T$
+\end_inset
+
+) is randomized.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Relative biases from the multiply-robust estimators of the mediated moderation
+ (
+\begin_inset Quotes eld
+\end_inset
+
+MedMod
+\begin_inset Quotes erd
+\end_inset
+
+) and remaining moderation (
+\begin_inset Quotes eld
+\end_inset
+
+RemainMod
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/xl9663/Library/CloudStorage/Box-Box/Labs/Mediated/R_mediated/simulation/Tables_Figs/fig.rbias.pdf
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+Note
+\emph default
+.
+ One-step: The one-step estimator.
+ TML: The targeted minimum loss estimator.
+ For both the one-step and TML estimators, estimates of the nuisance models
+ were yielded via five-fold cross-fitting; the estimation of the nuisance
+ models (
+\begin_inset Quotes eld
+\end_inset
+
+Nuisance_estimation
+\begin_inset Quotes erd
+\end_inset
+
+ in the legend) was done using either the parametric regressions (labeled
+ as 
+\begin_inset Quotes eld
+\end_inset
+
+parametric
+\begin_inset Quotes erd
+\end_inset
+
+) or (nonparametric) machine learning tools (labeled as 
+\begin_inset Quotes eld
+\end_inset
+
+machine
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Mean squared errors (MSE) from the multiply-robust estimators of the mediated
+ moderation (
+\begin_inset Quotes eld
+\end_inset
+
+MedMod
+\begin_inset Quotes erd
+\end_inset
+
+) and remaining moderation (
+\begin_inset Quotes eld
+\end_inset
+
+RemainMod
+\begin_inset Quotes erd
+\end_inset
+
+).
+ To facilitate comparison, the y-axis shows the square root of the MSE scaled
+ by the sample size 
+\begin_inset Formula $n$
+\end_inset
+
+ (i.e., 
+\begin_inset Formula $\sqrt{n\text{MSE}}$
+\end_inset
+
+, labeled as 
+\begin_inset Quotes eld
+\end_inset
+
+square root of n*MSE
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/xl9663/Library/CloudStorage/Box-Box/Labs/Mediated/R_mediated/simulation/Tables_Figs/fig.sqrtnMSE.pdf
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+Note
+\emph default
+.
+ One-step: The one-step estimator.
+ TML: The targeted minimum loss estimator.
+ For both the one-step and TML estimators, estimates of the nuisance models
+ were yielded via five-fold cross-fitting; the estimation of the nuisance
+ models (
+\begin_inset Quotes eld
+\end_inset
+
+Nuisance_estimation
+\begin_inset Quotes erd
+\end_inset
+
+ in the legend) was done using either the parametric regressions (labeled
+ as 
+\begin_inset Quotes eld
+\end_inset
+
+parametric
+\begin_inset Quotes erd
+\end_inset
+
+) or (nonparametric) machine learning tools (labeled as 
+\begin_inset Quotes eld
+\end_inset
+
+machine
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Coverage rates of the Wald-type 95% confidence intervals for the multiply-robust
+ estimators of the mediated moderation (
+\begin_inset Quotes eld
+\end_inset
+
+MedMod
+\begin_inset Quotes erd
+\end_inset
+
+) and remaining moderation (
+\begin_inset Quotes eld
+\end_inset
+
+RemainMod
+\begin_inset Quotes erd
+\end_inset
+
+).
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/xl9663/Library/CloudStorage/Box-Box/Labs/Mediated/R_mediated/simulation/Tables_Figs/fig.cover.pdf
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+Note
+\emph default
+.
+ One-step: The one-step estimator.
+ TML: The targeted minimum loss estimator.
+ For both the one-step and TML estimators, estimates of the nuisance models
+ were yielded via five-fold cross-fitting; the estimation of the nuisance
+ models (
+\begin_inset Quotes eld
+\end_inset
+
+Nuisance_estimation
+\begin_inset Quotes erd
+\end_inset
+
+ in the legend) was done using either the parametric regressions (labeled
+ as 
+\begin_inset Quotes eld
+\end_inset
+
+parametric
+\begin_inset Quotes erd
+\end_inset
+
+) or (nonparametric) machine learning tools (labeled as 
+\begin_inset Quotes eld
+\end_inset
+
+machine
+\begin_inset Quotes erd
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Empirical illustration
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Diagram of relationships among variables used in the mediated moderation
+ analysis of the illustrative example.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename ../../../Draft/diagram_lift.jpg
+	lyxscale 20
+	width 95text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+Note
+\emph default
+.
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+The baseline covariates (
+\begin_inset Formula $C$
+\end_inset
+
+) include include youth deviant peer association at baseline, delinquency
+ risk factor total score at baseline, baseline scores of parents’ social
+ economic status, maternal drinking, and other baseline variables related
+ to youth aggressive and delinquency behaviors, internalizing behaviors,
+ peer rejection, school adjustment, academic performance, playground aggression,
+ parent-child relationships and interactions, and parental involvement and
+ discipline.
+ 
+\end_layout
+
+\end_inset
+
+In this example, the intervention assignment (
+\begin_inset Formula $T$
+\end_inset
+
+) was randomized, and thus we did not draw arrows from the baseline covariates
+ (
+\begin_inset Formula $C$
+\end_inset
+
+) and subgroup (
+\begin_inset Formula $R$
+\end_inset
+
+) to 
+\begin_inset Formula $T$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Estimates of the potential tobacco use outcomes under each treatment assignment
+ (intervention or control) between the subgroups (boys and girls) in the
+ empirical example.
+ The reference subgroup (
+\begin_inset Formula $R=r_{0}$
+\end_inset
+
+) is girl.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/xl9663/Library/CloudStorage/Box-Box/Labs/Mediated/R_mediated/Tables_Figures/fig_Rboy_Mrisk8dvp8.pdf
+	lyxscale 60
+	width 80text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+\emph on
+Note
+\emph default
+.
+ The error bars show the 95% confidence intervals.
+ The outcome variable (
+\begin_inset Formula $Y$
+\end_inset
+
+) is youth tobacco use in the twelfth grade.
+ The mediator (
+\begin_inset Formula $M$
+\end_inset
+
+) includes risk factors measured around the tenth grade.
+ From left to right, the bars (bar1 to bar6) show estimates of the potential
+ outcomes in the causal estimands for the mediated and remaining moderation:
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+bar1 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(1)∣R=\text{boy},c]p(c)$
+\end_inset
+
+, bar2 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(1,\mathcal{M}_{1|\text{girl},c})∣R=\text{boy},c]p(c)$
+\end_inset
+
+, 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+bar3 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(1)∣R=\text{girl},c]p(c)$
+\end_inset
+
+, 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+bar4 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(0)∣R=\text{boy},c]p(c)$
+\end_inset
+
+, bar5 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(0,\mathcal{M}_{0|\text{girl},c})∣R=\text{boy},c]p(c)$
+\end_inset
+
+, 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+bar6 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(0)∣R=\text{girl},c]p(c)$
+\end_inset
+
+, 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+respectively.
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+The total moderation (Eq.
+ 1) is 
+\begin_inset Formula $\text{TotMod}=$
+\end_inset
+
+ bar1 
+\begin_inset Formula $-$
+\end_inset
+
+ bar3 
+\begin_inset Formula $-$
+\end_inset
+
+ bar4 
+\begin_inset Formula $+$
+\end_inset
+
+ bar6.
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+The mediated moderation (Eq.
+ 2) is 
+\begin_inset Formula $\text{MedMod}=$
+\end_inset
+
+ bar1 
+\begin_inset Formula $-$
+\end_inset
+
+ bar2 
+\begin_inset Formula $-$
+\end_inset
+
+ bar4 
+\begin_inset Formula $+$
+\end_inset
+
+ bar5.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+The remaining moderation (Eq.
+ 3) is 
+\begin_inset Formula $\text{RemainMod}=$
+\end_inset
+
+ bar2 
+\begin_inset Formula $-$
+\end_inset
+
+ bar3 
+\begin_inset Formula $-$
+\end_inset
+
+ bar5 
+\begin_inset Formula $+$
+\end_inset
+
+ bar6.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+
+\size footnotesize
+bar1 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(0)∣R=\text{female},c]p(c)$
+\end_inset
+
+, 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+bar3 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(0,\tilde{M}_{0|\text{female},c})∣R=\text{male},c]p(c)$
+\end_inset
+
+, 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+bar4 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(1)∣R=\text{female},c]p(c)$
+\end_inset
+
+, bar5 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(1)∣R=\text{male},c]p(c)$
+\end_inset
+
+, 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+bar6 = 
+\begin_inset Formula $\sum_{c}\mathrm{E}[Y(1,\tilde{M}_{1|\text{female},c})∣R=\text{male},c]p(c)$
+\end_inset
+
+, respectively.
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+The total moderation (Eq.
+ 1) is 
+\begin_inset Formula $\text{toD}=$
+\end_inset
+
+ bar5 
+\begin_inset Formula $-$
+\end_inset
+
+ bar4 
+\begin_inset Formula $-$
+\end_inset
+
+ bar2 
+\begin_inset Formula $+$
+\end_inset
+
+ bar1.
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+The mediated moderation (Eq.
+ 2) is 
+\begin_inset Formula $\text{meD}=$
+\end_inset
+
+ bar5 
+\begin_inset Formula $-$
+\end_inset
+
+ bar6 
+\begin_inset Formula $-$
+\end_inset
+
+ bar2 
+\begin_inset Formula $+$
+\end_inset
+
+ bar3.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+The remaining moderation (Eq.
+ 3) is 
+\begin_inset Formula $\text{reD}=$
+\end_inset
+
+ bar6 
+\begin_inset Formula $-$
+\end_inset
+
+ bar4 
+\begin_inset Formula $-$
+\end_inset
+
+ bar3 
+\begin_inset Formula $+$
+\end_inset
+
+ bar1.
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+The proposed estimation method was implemented via the multiply-robust one-step
+ estimator with a super learner ensemble of machine learning techniques
+ (e.g., random forests; see the main text for details).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Estimates of the tobacco use outcomes under each of the conditions (treatment
+ and control) between the subgroups (female and male), if the subgroup differenc
+e in the intermediate moderator (deviant peer association) were removed.
+ The reference subgroup (
+\begin_inset Formula $R=r^{*}$
+\end_inset
+
+) is female, and the comparison subgroup (
+\begin_inset Formula $R=r$
+\end_inset
+
+) is male.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/xl9663/Library/CloudStorage/Box-Box/Labs/Mediated/R_mediated/Tables_Figures/fig_Rmale_Mdvp8.pdf
+	lyxscale 60
+	width 75text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+Note
+\emph default
+.
+ The error bars show the 95% confidence intervals.
+ The estimation results were adjusted for observed baseline covariates.
+ The proposed estimation method was implemented via the target minimum loss
+ procedure with a super learner ensemble of machine learning techniques
+ (e.g., random forests; see the main text for details).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Estimates of the tobacco use outcomes under each of the conditions (treatment
+ and control) between the subgroups defined by gender, if (hypothetically)
+ the gender difference in the mediating moderator were eliminated.
+ The reference subgroup (
+\begin_inset Formula $R=r^{*}$
+\end_inset
+
+) is male, and the comparison subgroup (
+\begin_inset Formula $R=r$
+\end_inset
+
+) is female.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/xl9663/Library/CloudStorage/Box-Box/Labs/Mediated/R_mediated/Tables_Figures/fig_Rfemale_Mdvp456.pdf
+	lyxscale 60
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+Note
+\emph default
+.
+ The error bars show the 95% confidence intervals.
+ The mediating moderator includes deviant peer association scores posttreatment
+ (observed in grade 6 to 8), which are considered as developmental risk
+ factors.
+ The estimation results were adjusted for observed baseline covariates.
+ The proposed estimation method was implemented via the target minimum loss
+ procedure with a super learner ensemble of machine learning techniques
+ (e.g., random forests; see the main text for details).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -4,7 +4,7 @@ options(dplyr.print_max = 100, pillar.print_max = 50, dplyr.width = Inf)
 library(glue)
 library(cowplot)
 library(ggpattern)
-library(GGally)
+library(ggpubr)
 # library(latex2exp)
 
 
@@ -287,7 +287,15 @@ res_long1 <- res_long %>% mutate(
                             "FE" ~ "Mfixed", "RE" ~ "Mrand", "SL" ~ "Msl"), 
          Y_fit = case_match(cluster_y, 
                             "FE" ~ "Yfixed", "RE" ~ "Yrand", "SL" ~ "Ysl")
-         )
+         ) %>% 
+  mutate(Estimand = case_match(effname, 
+                            "Y(0,gmjo(0))" ~ "theta_joint(0,0)",
+                            "Y(1,gmjo(0))" ~ "theta_joint(1,0)",
+                            "Y(1,gmjo(1))" ~ "theta_joint(1,1)",
+                            "Y(1,gm1(0),gm2(0))" ~ "theta_each(1,0,0)",
+                            "Y(1,gm1(1),gm2(0))" ~ "theta_each(1,1,0)",
+                            "Y(1,gm1(1),gm2(1))" ~ "theta_each(1,1,1)",
+                            .default = effname) )
 
 write_csv(res_long1, file = "Tables_Figs/res_long1.csv")
 
@@ -295,14 +303,14 @@ write_csv(res_long1, file = "Tables_Figs/res_long1.csv")
 
 # across sample sizes 
 aggtab <- res_long1 %>% 
-  filter(str_detect(effname, "Y\\(") ) %>% 
+  # filter(str_detect(effname, "Y\\(") ) %>% 
   group_by(
   J, nj, 
   cluster_a, cluster_m, cluster_y,
   A_fit, M_fit, Y_fit,
   A_mod, M_mod, Y_mod,
   Estimator, estimator,
-  # effname, 
+  effname, 
   abs.performance
 ) %>% summarise(
   across(abs.value, list(mean = ~mean(.), min = ~min(.), max = ~max(.)))
@@ -320,7 +328,7 @@ aggtab_wide <- aggtab %>% pivot_wider(
 ) #%>% mutate(across(starts_with("MSE_"), ~(.*1000), .names ="1000{.col}") )
 
 aggtab_wide <- aggtab_wide %>% 
-  select(# effname, 
+  select(effname, 
          J, nj, Estimator, #A_mod, M_mod, Y_mod, 
          cluster_a, cluster_m, cluster_y,
          contains("Rel.Bias"), contains("RMSE"), everything()) %>% 
@@ -402,7 +410,7 @@ fig.rbias <- ggplot(plotdf) +
                      # ,breaks = c(-1.5, -1, -0.5, 0, 0.5, 1, 1.5)/10
                      ) +
   scale_y_discrete("fitted models for A, Y, M") +
-  geom_vline(xintercept = 0.1, size = 0.2, linetype = "longdash") +
+  # geom_vline(xintercept = 0.1, size = 0.2, linetype = "longdash") +
   # geom_vline(xintercept = 0.05, size = 0.2, linetype = "longdash") +
   # geom_hline(yintercept = 0, size = 0.4, linetype = "longdash") +
   # geom_hline(yintercept = -0.05, size = 0.2, linetype = "longdash") +
@@ -464,7 +472,7 @@ fig.rbias <- ggplot(plotdf) +
                      # ,breaks = c(-1.5, -1, -0.5, 0, 0.5, 1, 1.5)/10
   ) +
   scale_y_discrete("fitted models for A, Y, M") +
-  geom_vline(xintercept = 0.1, size = 0.2, linetype = "longdash") +
+  # geom_vline(xintercept = 0.1, size = 0.2, linetype = "longdash") +
   # geom_vline(xintercept = 0.05, size = 0.2, linetype = "longdash") +
   # geom_hline(yintercept = 0, size = 0.4, linetype = "longdash") +
   # geom_hline(yintercept = -0.05, size = 0.2, linetype = "longdash") +
@@ -491,7 +499,160 @@ ggsave("Tables_Figs/fig_FEvsRE.pdf", height = 12.5, width = 12.5)
 
 
 
+##  nj ----
+plotdf <- res_long1 %>% 
+  filter(
+    abs.performance %in% c("|Rel.Bias|"),
+    # abs.performance %in% c("RMSE") ,  
+    # str_detect(effname, "Y\\(")
+    # effname %in% c("IIE_Mjo(1,)")
+    effname %in% c("Y(1,gm1(1),gm2(0))") # c( "Y(0,gmjo(0))" ), # (!true_model %in% c("other"))
+    , J == 100, icc == 0.2 , x_z == 0.3 
+    , cluster_a %in% c("FE","RE"), cluster_m %in% c("FE","RE"), cluster_y %in% c("FE","RE")
+  )
 
+fig.rbias <- ggplot(plotdf, aes( y = abs.value, x= nj, group = Estimator ) ) +
+  # ggtitle( glue("{unique(plotdf$J)} clusters, cluster size {unique(plotdf$nj)}") ) + 
+  ggtitle(glue("{unique(plotdf$J)} clusters, ICC {unique(plotdf$icc)}, X_with_U {unique(plotdf$x_z)}; estimand: {unique(plotdf$Estimand)}")) +
+  facet_grid(M_fit ~ A_fit + Y_fit, 
+             #A_fit ~ Y_fit, #Y_true + Clus_true + Trt_true
+             labeller = labeller(
+               x_z = label_both, cluster_y = label_both , 
+               abs.performance = label_value, Estimator = label_both
+             ), 
+             scales = "fixed") +
+  geom_point(
+  # geom_boxplot(
+    aes( 
+         # xmin = , xmax = max(abs.value), xlower=quantile(abs.value, 0.25),xupper=quantile(abs.value, 0.75),
+         # y = interaction(A_fit,  Y_fit, M_fit), #interaction(A_mod,  Y_mod,  M_mod), #
+         shape = Estimator
+    ), size = 1.8  #, position = "jitter"
+    ) +
+  geom_line(aes( color = Estimator  ) ) +
+  # scale_y_continuous("Relative Bias or RMSE" 
+  #                    # ,breaks = c(-1.5, -1, -0.5, 0, 0.5, 1, 1.5)/10
+  # ) +
+  scale_y_continuous("|Rel.Bias|") +
+  scale_x_discrete("Cluster size (nj)") +
+  # geom_vline(xintercept = 0.1, size = 0.2, linetype = "longdash") +
+  # geom_vline(xintercept = 0.05, size = 0.2, linetype = "longdash") +
+  # geom_hline(yintercept = 0, size = 0.4, linetype = "longdash") +
+  # geom_hline(yintercept = -0.05, size = 0.2, linetype = "longdash") +
+  # geom_hline(yintercept = -0.1, size = 0.2, linetype = "longdash") +
+  # scale_x_continuous("Relative Bias", breaks = c(-c(9,5,3)/10, -0.1, 0.1, c(3,5,9)/10) ) +
+  # scale_linetype_manual("Estimator", values = c("solid", "dashed")) +
+  # scale_color_manual("Fit models", values = c("darkgreen", "blue")) +
+  fig.theme + 
+  theme(
+    strip.background = element_rect(color = "lightgrey", fill = "lightgrey"),
+    # strip.background.y = element_blank(),
+    strip.text = element_text(size = 15),
+    # strip.text.y = element_blank(),
+    plot.title = element_text(size = 16),
+    axis.title = element_text(size = 14),
+    axis.text.y = element_text(size = 15),
+    axis.text.x = element_text(size = 15) # element_text(angle = 90, vjust = 0.5, hjust=1)
+  )
+
+fig.rbias
+
+ggsave("Tables_Figs/figML_nj.pdf", height = 7, width = 12)
+
+
+
+
+##  J * nj ----
+one.plot <- function (p = c("|Rel.Bias|") ) {
+  
+  plotdf <- res_long1 %>% 
+    filter(
+      # abs.performance %in% c("|Rel.Bias|", "RMSE"),
+      abs.performance %in% c(p) ,
+      # str_detect(effname, "Y\\(")
+      # effname %in% c("IIE_Mjo(1,)")
+      effname %in% c( "Y(1,gmjo(0))" ) # c("Y(1,gm1(1),gm2(0))")  c( "Y(0,gmjo(0))" ), # (!true_model %in% c("other"))
+      , ((J == 100 & nj ==10) | (J == 20 & nj ==50)), 
+      icc == 0.2  # x_z == 0.3 
+      , cluster_a %in% c("FE","RE"), cluster_m %in% c("FE","RE"), cluster_y %in% c("FE","RE")
+    ) %>% 
+    mutate(x_with_z = factor(x_z)) %>% 
+    mutate( J_nj = paste(J, nj, sep=" * ") )
+  
+  fig.rbias <- ggplot(plotdf, aes( y = abs.value, x= J_nj, group = interaction(Estimator, x_with_z) ) ) +
+    # ggtitle( glue("{unique(plotdf$J)} clusters, cluster size {unique(plotdf$nj)}") ) + 
+    # ggtitle(glue("ICC {unique(plotdf$icc)}; estimand: {unique(plotdf$Estimand)}")) +
+    facet_grid(M_fit ~ A_fit + Y_fit , 
+               #A_fit ~ Y_fit, #Y_true + Clus_true + Trt_true
+               labeller = labeller(
+                 x_z = label_both, cluster_y = label_both , 
+                 abs.performance = label_value, Estimator = label_both
+               ), 
+               scales = "fixed") +
+    geom_point(
+      # geom_boxplot(
+      aes( 
+        # xmin = , xmax = max(abs.value), xlower=quantile(abs.value, 0.25),xupper=quantile(abs.value, 0.75),
+        # y = interaction(A_fit,  Y_fit, M_fit), #interaction(A_mod,  Y_mod,  M_mod), #
+        shape = Estimator
+      ), size = 1.8  #, position = "jitter"
+    ) +
+    geom_line(aes( color = Estimator, linetype = x_with_z  ) ) +
+    # scale_y_continuous("Relative Bias or RMSE" 
+    #                    # ,breaks = c(-1.5, -1, -0.5, 0, 0.5, 1, 1.5)/10
+    # ) +
+    # scale_y_continuous("|Rel.Bias|") +
+    scale_y_continuous( p ) +
+    scale_x_discrete("J * nj") +
+    # geom_vline(xintercept = 0.1, size = 0.2, linetype = "longdash") +
+    # geom_vline(xintercept = 0.05, size = 0.2, linetype = "longdash") +
+    # geom_hline(yintercept = 0, size = 0.4, linetype = "longdash") +
+    # geom_hline(yintercept = -0.05, size = 0.2, linetype = "longdash") +
+    # geom_hline(yintercept = -0.1, size = 0.2, linetype = "longdash") +
+    # scale_x_continuous("Relative Bias", breaks = c(-c(9,5,3)/10, -0.1, 0.1, c(3,5,9)/10) ) +
+    # scale_linetype_manual("Estimator", values = c("solid", "dashed")) +
+    # scale_color_manual("Fit models", values = c("darkgreen", "blue")) +
+    fig.theme + 
+    theme(
+      # plot.margin = margin(c(2, 1, 1, 1), unit="lines"),
+      strip.background = element_rect(color = "lightgrey", fill = "lightgrey"),
+      # strip.background.y = element_blank(),
+      strip.text = element_text(size = 15),
+      # strip.text.y = element_blank(),
+      legend.key.height = unit(1, "mm"),
+      legend.spacing.y = unit(0.2, "mm"),
+      legend.box.spacing = unit(0.2, "mm"),
+      plot.title = element_text(size = 16),
+      axis.title = element_text(size = 14),
+      axis.text.y = element_text(size = 15),
+      axis.text.x = element_text(size = 15) # element_text(angle = 90, vjust = 0.5, hjust=1)
+    )
+  
+  fig.rbias
+  
+} 
+
+plotlist <- lapply(c("|Rel.Bias|", "RMSE"), one.plot)
+
+plot_bind <- ggarrange(plotlist = plotlist, ncol = 1, nrow = 2,
+                       # labels = c(glue("ICC {unique(plotdf$icc)}; estimand: {unique(plotdf$Estimand)}"), NULL),
+                       # label.y = 1.4,
+                       common.legend = TRUE)
+plot_bind1 <- plot_bind + theme(plot.margin = margin(c(1, 0, 0, 0), unit="lines"))
+annotate_figure(plot_bind1, 
+                bottom = text_grob("Number of clusters (J) * Cluster size (nj)", size = 16),
+                # top = text_grob(glue("ICC {unique(plotdf$icc)}; estimand: {unique(plotdf$Estimand)}"), face = "plain", size = 14) 
+                fig.lab = glue("ICC {unique(plotdf$icc)}; estimand: {unique(plotdf$Estimand)}"), fig.lab.size = 14
+                )
+
+ggsave("Tables_Figs/figML_Jnj.pdf", height = 10, width = 10)
+
+
+
+
+
+
+# Old figs -------------
 ## mse -----------------------
 
 plotdf <- res_long1 %>% filter(
@@ -522,7 +683,7 @@ fig.mse <- ggplot(plotdf) +
 fig.mse
 
 
-ggsave("Tables_Figs/fig.sqrtnMSE.pdf", height = 10, width = 12)
+# ggsave("Tables_Figs/fig.sqrtnMSE.pdf", height = 10, width = 12)
 # ggsave("Tables_Figs/fig.RMSE.pdf", height = 10, width = 12)
 
 
@@ -553,7 +714,7 @@ fig.cover <- ggplot(plotdf) +
 
 fig.cover
 
-ggsave("Tables_Figs/fig.cover.pdf", height = 10, width = 12)
+# ggsave("Tables_Figs/fig.cover.pdf", height = 10, width = 12)
 
 # supplement 
 
@@ -586,120 +747,6 @@ fig.absrbias <- ggplot(plotdf) +
 fig.absrbias
 
 
-ggsave("Tables_Figs/fig.absrbias.pdf", height = 10, width = 12)
-
-
-
-
-save.image("/work/08878/xliu19/ls6/meMO/simulation/results.RData")
-
-
-# NOT WORK ----------
-
-
-
-# NOT USED currently --------
-
-# Binomial
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_Bqt_n300.RData" # updated quadratic.R means tt's true model is quadractic
-jobconds <- which( (condition$quadratic.R== 1) & condition$Fit %in% c("mlr", "linear") & condition$n %in% c(300) )
-
-dirpath <-"/work/08878/xliu19/ls6/meMO/simulation/RData/job_Bqt_n500.RData"
-jobconds <- which( (condition$quadratic.R== 1) & condition$Fit %in% c("mlr", "linear") & condition$n %in% c(500) )
-
-
-dirpath <-"/work/08878/xliu19/ls6/meMO/simulation/RData/job_Bqt_n1000.RData"
-jobconds <- which( (condition$quadratic.R== 1) & condition$Fit %in% c("mlr", "linear") & condition$n %in% c(1000) )
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_Ball_n300.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y <= 3) & condition$Fit %in% c("mlr", "linear") & condition$n %in% c(300) )
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauBq5000.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y==3) & condition$Fit == "mlr" & condition$n %in% c(5000) )
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauBq5000.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y==3) & condition$Fit == "mlr" & condition$n %in% c(5000) ) 
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauBq5000_Flin.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y==3) & condition$Fit == "linear" & condition$n %in% c(5000) ) 
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauBq1000_Fmlr.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y==3) & condition$Fit == "mlr" & condition$n %in% c(1000) ) 
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauBq1000_Fmlr_old.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y==3) & condition$Fit == "mlr" & condition$n %in% c(1000) ) 
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauBq1000_Flin_old.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y==3) & condition$Fit == "linear" & condition$n %in% c(1000) ) 
-
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauBqone1000_Flin_old.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y < 3) & condition$Fit == "linear" & condition$n %in% c(1000) )
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauBqone1000_Flin.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y < 3) & condition$Fit == "linear" & condition$n %in% c(1000) )
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_Ball_n1000_Fmlr.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y <= 3) & condition$Fit == "mlr" & condition$n %in% c(1000) )
-
-
-
-# 20 num_c
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_Bqt_20c_n300_mlr.RData"
-jobconds <- which( (condition$quadratic.R== 1) & condition$Fit %in% c("mlr") & condition$n %in% c(300) )
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_Bnonqt_20c_n300_mlr.RData"
-jobconds <- which( (condition$quadratic.R== 0) & condition$Fit %in% c("mlr") & condition$n %in% c(300) )
-
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_Bqt_20c_n500_mlr2.RData"
-jobconds <- which( (condition$quadratic.R== 1) & condition$Fit %in% c("mlr") & condition$n %in% c(500) )[2]
-
-dirpath<-"/work/08878/xliu19/ls6/meMO/simulation/RData/old/job_Bqt_20c_n300_lin_allv.RData"
-jobconds <- which( (condition$quadratic.R== 1) & condition$Fit %in% c("linear") & condition$n %in% c(300) )
-
-dirpath<-"/work/08878/xliu19/ls6/meMO/simulation/RData/old/job_Bqt_20c_n300_mlr_allv.RData"
-jobconds <- which( (condition$quadratic.R== 1) & condition$Fit %in% c("mlr") & condition$n %in% c(300) )
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_Bqt_20c_n300_lin_safev.RData"
-jobconds <- which( (condition$quadratic.R== 1) & condition$Fit %in% c("linear") & condition$n %in% c(300) )
-
-#  "gaussian"
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_Gqrqt_20c_n300_lin.RData"
-jobconds <- which( ((condition$quadratic.R+condition$quadratic.tt) %in% c(1,2) ) & condition$Fit %in% c("linear") & condition$Yfamily=="gaussian" & condition$n %in% c(300) )
-
-
-
-
-# "gaussian"
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauN1000.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y<=3) & condition$Fit == "mlr" & condition$n %in% c(1000) )
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauN5000.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y<=3) & condition$Fit == "mlr" & condition$n %in% c(5000) ) 
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauNq5000.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y==3) & condition$Fit == "mlr" & condition$n %in% c(5000) ) 
-
-
-dirpath <- "/work/08878/xliu19/ls6/meMO/simulation/RData/job_gauNq1000.RData"
-jobconds <- which( (condition$quadratic.R + condition$quadratic.M + condition$quadratic.Y==3) & condition$Fit == "mlr" & condition$n %in% c(1000) )
-
-
-
-
-
-
-
-
+# ggsave("Tables_Figs/fig.absrbias.pdf", height = 10, width = 12)
 
 
