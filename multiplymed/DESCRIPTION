@@ -1,0 +1,24 @@
+Package: mediated
+Type: Package
+Title: Interventional (In)Direct Effects
+Version: 0.1.0
+Author: Xiao Liu
+Maintainer: Xiao Liu <xiao.liu@austin.utexas.edu>
+Description: Interventional (in)direct effects with multiple mediators. 
+Imports: 
+    tidyverse,
+    glue,
+    origami,
+    fastDummies,
+    SuperLearner,
+    lme4,
+    mvtnorm
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+VignetteBuilder: knitr, rmarkdown
+RoxygenNote: 7.2.3
