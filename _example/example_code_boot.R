@@ -23,7 +23,7 @@ Xnames <- colnames(datobs) %>% grep("^X_", ., value = TRUE)
 Wnames <- c("W_BYURBAN.x_2", "W_BYACCLIM", "W_BY10FLP") 
 
 Aname <- "A" 
-Mnames <- c("M1", "M2") 
+Mnames <- c("M2", "M1") 
 Yname <- "Y" 
 
 
@@ -40,10 +40,10 @@ set.seed(12)
 datseeds <- sample(1:1e6, 1000)
 
 iseed <-0
-cond <- "M1M2"
 
 
-OneData <- function(iseed = 1, cond = "M1M2") {
+
+OneData <- function(iseed = 1) {
   if (iseed != 0) {
     set.seed(datseeds[iseed])
     J <- length(unique(datobs$school))
@@ -55,13 +55,6 @@ OneData <- function(iseed = 1, cond = "M1M2") {
     dat_boot <- datobs
   }
   
-  
-  if (cond == "M1M2") {
-    Mnames <- c("M1", "M2")
-  }
-  if (cond == "M2M1") {
-    Mnames <- c("M2", "M1")
-  }
   
   if(length(unique(datobs$Y)) == 2) {Yfamily <- "binomial"}
   if(length(unique(datobs$Y)) > 2) {Yfamily <- "gaussian"}
@@ -127,7 +120,7 @@ rname <- "example_results.RData"
 rname <- as.character(rname)
 
 res <- mclapply(jobseeds, 
-                OneData, cond = "M1M2", 
+                OneData, 
                 mc.preschedule = TRUE, mc.cores = 4) 
 
 save(
