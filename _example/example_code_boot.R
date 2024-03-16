@@ -20,7 +20,6 @@ dat <- data_example
 
 Sname <- "school" 
 Xnames <- colnames(dat) %>% grep("^X_", ., value = TRUE)
-Wnames <- colnames(dat) %>% grep("^W_", ., value = TRUE)
 Aname <- "A" 
 Mnames <- c("M1", "M2") 
 Yname <- "Y" 
