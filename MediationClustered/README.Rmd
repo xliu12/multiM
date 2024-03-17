@@ -1,0 +1,14 @@
+---
+title: "multiple mediators with clustered data"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+Interventional (in)direct effects for multiple mediators with clustered data.

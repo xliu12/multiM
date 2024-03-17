@@ -1,0 +1,24 @@
+Package: MediationClustered
+Type: Package
+Title: Interventional (In)Direct Effects for Multiple Mediators with Clustered Data
+Version: 0.1.0
+Author: Xiao Liu
+Maintainer: Xiao Liu <xiao.liu@austin.utexas.edu>
+Description: Methods for estimating the interventional (in)direct effects for multiple mediators with clustered data. The methods currently include those in Liu (2024).
+Imports: 
+    tidyverse,
+    glue,
+    origami,
+    fastDummies,
+    SuperLearner,
+    lme4,
+    mvtnorm
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+VignetteBuilder: knitr, rmarkdown
+RoxygenNote: 7.2.3
