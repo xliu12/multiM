@@ -247,11 +247,7 @@ methds <- methds_all %>%
         cluster_opt_y = paste(cluster_y, Fit, sep=".")
     ) 
 
-set.seed(12)
 datseeds <- sample(1:1e6, 1000)
-
-iseed <- 1
-cond <- 1
 
 
 
