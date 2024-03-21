@@ -34,7 +34,7 @@ my <- function(m2, m1, a, given, gen_y, binary = TRUE) {
     cond_mean <- pnorm(latent, mean = 0, sd = sqrt(1 - gen_y[["iccy"]]))
   }
   if (!binary) {
-    cond_mean <- latent
+    cond_mean <- plogis(latent)
   }
   
   cond_mean
