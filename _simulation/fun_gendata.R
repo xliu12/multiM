@@ -18,9 +18,9 @@ pm2 <- function(m2, m1, a, given, gen_m) {
   m2 * prob1 + (1 - m2) * (1 - prob1)
 }
 
-pm2a <- function(m2, a, given, gen_m) {
-    pm2(m2, 1, a, given, gen_m) * pm1(1, a, given, gen_m) +
-        pm2(m2, 0, a, given, gen_m) * pm1(0, a, given, gen_m)
+pm2a <- function(m2, a, m2_given, m1_given, gen_m) {
+    pm2(m2, 1, a, m2_given, gen_m) * pm1(1, a, m1_given, gen_m) +
+        pm2(m2, 0, a, m2_given, gen_m) * pm1(0, a, m1_given, gen_m)
 }
 
 
