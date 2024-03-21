@@ -167,7 +167,7 @@ GenData <- function(
                     m1 <- vals$m1[i]
                     m2 <- vals$m2[i]
                     p_marginal <- pm1(m1, a1, m1_given, gen_m) *
-                        pm2a(m2, a2, m2_given, gen_m)
+                        pm2a(m2, a2, m2_given, m1_given, gen_m)
 
                     p_marginal * my(m2 = vals$m2[i], m1 = vals$m1[i], a = a0,
                            y_given, gen_y, binary = (Yfamily=="binomial"))
