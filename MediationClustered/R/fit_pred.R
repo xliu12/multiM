@@ -43,10 +43,10 @@ crossfit <- function(train, valid.list, yname, xnames, varnames,
         }, simplify = TRUE)
     }
 
-    if (cluster_opt %in% c("FE.mlr", "noncluster.mlr")) {
+    if (cluster_opt %in% c("fix.mlr", "noncluster.mlr")) {
         df_FE <- data.frame(df_lm, train[, Sname_dummies])
         set.seed(12345)
-        if (cluster_opt == "FE.mlr") {
+        if (cluster_opt == "fix.mlr") {
 
             fit <- SuperLearner::SuperLearner(
                 df_FE$Y,
@@ -100,29 +100,65 @@ crossfit <- function(train, valid.list, yname, xnames, varnames,
         }, simplify = TRUE)
 
     }
-    # demean
-    if (cluster_opt == "demean") { # continuous Y
-        df_demean <- df_lm %>%
+
+
+    # clusters ------------------------
+    if (cluster_opt == "FE.mlr") {
+        df_FE <- data.frame(df_lm, train[, Sname_dummies])
+        df_cwc <- df_lm %>%
             group_by(S) %>%
             mutate(across(everything(), ~.x-mean(.x) ))
-
+        df_cluster <- data.frame(df_cwc, train[, Sname_dummies])
         fit <- SuperLearner::SuperLearner(
-            df_demean$Y,
-            df_demean[, xnames, drop = FALSE],
-            obsWeights = wreg,
+            df_FE$Y,
+            df_cluster[, c(xnames, Sname_dummies), drop = FALSE],
             family = "gaussian",
-            SL.library = learners
+            SL.library = learners,
+            env = environment(SuperLearner::SuperLearner)
         )
         preds <- sapply(valid.list, function(validX) {
             newX <- data.frame(Y = validX[[yname]],
-                validX[, xnames, drop = FALSE],
+                               validX[, xnames, drop = FALSE],
+                               S = validX[[Sname]] )
+            newX_cwc <- newX %>%
+                group_by(S) %>%
+                mutate(across(everything(), ~.x-mean(.x) ))
+            newX_cluster <- data.frame(newX_cwc, validX[, Sname_dummies])
+
+            preds <- predict(fit, newX_cluster[, fit$varNames])$pred
+
+            if (!bounded) {
+                return(preds)
+            }
+            bound(preds)
+        }, simplify = TRUE)
+
+    }
+
+
+    # demean
+    if (cluster_opt == "demean") { # continuous Y
+        df_FE <- data.frame(df_lm, train[, Sname_dummies])
+        df_demean <- df_lm %>%
+            group_by(S) %>%
+            mutate(across(everything(), ~.x-mean(.x) ))
+        df_demean_FE <- data.frame(df_demean, train[, Sname_dummies])
+        fit <- SuperLearner::SuperLearner(
+            df_demean_FE$Y,
+            df_demean_FE[, c(xnames, Sname_dummies), drop = FALSE],
+            family = "gaussian",
+            SL.library = learners,
+            env = environment(SuperLearner::SuperLearner)
+        )
+        preds <- sapply(valid.list, function(validX) {
+            newX <- data.frame(Y = validX[[yname]],
+                               validX[, xnames, drop = FALSE],
                                S = validX[[Sname]] )
             newX_demean <- newX %>%
                 group_by(S) %>%
                 mutate(across(everything(), ~.x-mean(.x) ))
-
-            preds_demean <- predict(fit, newX_demean[, fit$varNames])$pred
-
+            newX_demean_FE <- data.frame(newX_demean, validX[, Sname_dummies])
+            preds_demean <- predict(fit, newX_demean_FE[, fit$varNames])$pred
             newXcm <- newX %>%
                 group_by(S) %>%
                 mutate(Y_cm = mean(Y))
