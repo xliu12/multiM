@@ -66,7 +66,7 @@ OneData <- function(iseed = 1) {
       learners_a <- learners_m <- learners_y <- c("SL.glm")
     }
     if (Fit == "mlr") {
-      learners_a <- learners_m <- learners_y <- c("SL.ranger", "SL.glm")
+      learners_a <- learners_m <- learners_y <- c("SL.ranger", "SL.earth")
     }
     
     cluster_opt_a <- methds$cluster_opt_a[jj]
